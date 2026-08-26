@@ -2,9 +2,9 @@ package wrappers
 
 import (
 	"encoding/json"
-	"net/url"
 	"github.com/payu-india/web-sdk-go/http"
 	"github.com/payu-india/web-sdk-go/utils"
+	"net/url"
 )
 
 // VerifyPayment is a wrapper for the verify_payment command

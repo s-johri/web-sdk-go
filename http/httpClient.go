@@ -17,7 +17,7 @@ func PostForm(url string, payload url.Values) (map[string]interface{}, error) {
 	// Create a new HTTP request with the POST method and the request body
 	request, err := http.NewRequest("POST", url, requestBody)
 	if err != nil {
-			return nil, err
+		return nil, err
 	}
 
 	// Set the content type header to x-www-form-urlencoded
@@ -26,7 +26,7 @@ func PostForm(url string, payload url.Values) (map[string]interface{}, error) {
 	// Send the request and get the response
 	response, err := client.Do(request)
 	if err != nil {
-			return nil, err
+		return nil, err
 	}
 
 	// Close the response body when we're done
@@ -36,7 +36,7 @@ func PostForm(url string, payload url.Values) (map[string]interface{}, error) {
 	var responseBody map[string]interface{}
 	err = json.NewDecoder(response.Body).Decode(&responseBody)
 	if err != nil {
-			return nil , err 
+		return nil, err
 	}
 
 	// Return the response body as a dictionary

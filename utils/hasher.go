@@ -29,12 +29,12 @@ func PaymentHasher(credes Creds, params map[string]interface{}) string {
 	return HashString(hashString)
 }
 
-func ReverseHasher(credes Creds, params map[string]interface{}) (string,error) {
-	mandatoryParams := []string{"status","txnid", "amount", "productinfo", "firstname"}
+func ReverseHasher(credes Creds, params map[string]interface{}) (string, error) {
+	mandatoryParams := []string{"status", "txnid", "amount", "productinfo", "firstname"}
 	for _, paramName := range mandatoryParams {
-			if _, ok := params[paramName]; !ok {
-					return "", fmt.Errorf("missing mandatory parameter %q", paramName)
-			}
+		if _, ok := params[paramName]; !ok {
+			return "", fmt.Errorf("missing mandatory parameter %q", paramName)
+		}
 	}
 	udf1, udf2, udf3, udf4, udf5 := "", "", "", "", ""
 	if value, ok := params["udf1"].(string); ok {
@@ -56,7 +56,7 @@ func ReverseHasher(credes Creds, params map[string]interface{}) (string,error) {
 	if _, ok := params["additionalCharges"]; ok {
 		hashString = fmt.Sprintf("%v|%v", params["additionalCharges"], hashString)
 	}
-	return HashString(hashString),nil
+	return HashString(hashString), nil
 }
 
 func CheckReversehash(credes Creds, params map[string]interface{}) (bool, error) {

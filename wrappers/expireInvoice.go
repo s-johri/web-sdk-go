@@ -12,10 +12,10 @@ func ExpireInvoice(creds utils.Creds, apiEndPoint string, var1 string) (map[stri
 	command := "expire_invoice"
 	// Create the payload
 	payload := url.Values{
-		"key": {creds.Key},
+		"key":     {creds.Key},
 		"command": {command},
-		"var1": {var1},
-		"hash": {utils.ApiHasher(creds, utils.ApiStruct{Command: command, Var1: var1})},
+		"var1":    {var1},
+		"hash":    {utils.ApiHasher(creds, utils.ApiStruct{Command: command, Var1: var1})},
 	}
 
 	// Send the request and get the response

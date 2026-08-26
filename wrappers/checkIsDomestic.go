@@ -14,10 +14,10 @@ func CheckIsDomestic(creds utils.Creds, apiEndPoint string, bin int) (map[string
 	var1 := strconv.Itoa(bin)
 	// Create the payload
 	payload := url.Values{
-		"key": {creds.Key},
+		"key":     {creds.Key},
 		"command": {command},
-		"var1": {var1},
-		"hash": {utils.ApiHasher(creds, utils.ApiStruct{Command: command, Var1: var1})},
+		"var1":    {var1},
+		"hash":    {utils.ApiHasher(creds, utils.ApiStruct{Command: command, Var1: var1})},
 	}
 
 	// Send the request and get the response
