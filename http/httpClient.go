@@ -1,44 +1,53 @@
 package http
 
 import (
-	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"strings"
+	"time"
 )
 
-func PostForm(url string, payload url.Values) (map[string]interface{}, error) {
-	// Create a new HTTP client
-	client := &http.Client{}
+// requestTimeout bounds a single PayU call. Without it a stalled endpoint
+// blocks the calling goroutine forever.
+const requestTimeout = 30 * time.Second
 
-	// Encode the payload as x-www-form-urlencoded
-	requestBody := bytes.NewBufferString(payload.Encode())
+// maxErrorBodyBytes limits how much of an error response is quoted back, so a
+// large HTML error page does not end up inside an error string.
+const maxErrorBodyBytes = 512
 
-	// Create a new HTTP request with the POST method and the request body
-	request, err := http.NewRequest("POST", url, requestBody)
+// defaultClient is shared across calls so connections are reused.
+var defaultClient = &http.Client{Timeout: requestTimeout}
+
+// PostForm posts an x-www-form-urlencoded payload to a PayU endpoint and
+// decodes the JSON response.
+func PostForm(endpoint string, payload url.Values) (map[string]interface{}, error) {
+	request, err := http.NewRequest("POST", endpoint, strings.NewReader(payload.Encode()))
 	if err != nil {
-			return nil, err
+		return nil, err
 	}
 
 	// Set the content type header to x-www-form-urlencoded
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	// Send the request and get the response
-	response, err := client.Do(request)
+	response, err := defaultClient.Do(request)
 	if err != nil {
-			return nil, err
+		return nil, err
 	}
-
-	// Close the response body when we're done
 	defer response.Body.Close()
 
-	// Decode the response body into a map[string]interface{} variable
-	var responseBody map[string]interface{}
-	err = json.NewDecoder(response.Body).Decode(&responseBody)
-	if err != nil {
-			return nil , err 
+	if response.StatusCode < 200 || response.StatusCode > 299 {
+		// PayU serves an HTML error page on failure, which would otherwise
+		// surface as a confusing JSON decode error.
+		body, _ := io.ReadAll(io.LimitReader(response.Body, maxErrorBodyBytes))
+		return nil, fmt.Errorf("payu returned status %d: %s", response.StatusCode, strings.TrimSpace(string(body)))
 	}
 
-	// Return the response body as a dictionary
+	var responseBody map[string]interface{}
+	if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+		return nil, err
+	}
 	return responseBody, nil
 }
