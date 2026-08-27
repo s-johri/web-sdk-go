@@ -7,8 +7,7 @@ import (
 	"strconv"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// EligibleBinsForEMI reports whether a bin is eligible for EMI through the eligibleBinsForEMI command.
 func EligibleBinsForEMI(creds utils.Creds, apiEndPoint string, bin int) (map[string]interface{}, error) {
 	command := "eligibleBinsForEMI"
 	var1 := strconv.Itoa(bin)

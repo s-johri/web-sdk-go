@@ -7,8 +7,7 @@ import (
 	"github.com/payu-india/web-sdk-go/utils"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// GetCheckoutDetails returns payment options, offers, eligibility, recommendations and downtime through the get_checkout_details command.
 func GetCheckoutDetails(creds utils.Creds, apiEndPoint string, params map[string]interface{}) (map[string]interface{}, error) {
 	command := "get_checkout_details"
 	//Marshal map to jsons string

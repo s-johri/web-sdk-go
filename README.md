@@ -13,7 +13,12 @@ Following features are supported in the PayU GO web SDK:
  - Check the customer’s eligibility for EMI and get the EMI amount according to interest 
  - Pay by link genration
 
-To get started with PayU, visit our [Developer Guide](https://devguide.payu.in/low-code-web-sdk/getting-started-low-code-web-sdk/)
+To get started with PayU, visit the [PayU developer documentation](https://docs.payu.in/).
+
+API reference by family:
+[transaction checks](https://docs.payu.in/reference/check-transaction-apis) ·
+[refunds](https://docs.payu.in/reference/refund-apis) ·
+[bin APIs](https://docs.payu.in/reference/bin-apis)
 
 # Table of Contents
  1. [Usage](#usage)
@@ -38,7 +43,7 @@ Please follow the [Usage](#usage) instruction and execute the following GO code 
 payu, err := payu.NewClient(
   <YOUR_MERCHANT_KEY>,
   <YOUR_MERCHANT_SALT>,
-  <ENVIRONMENT>                 // Possible value  = TEST/LIVE
+  <ENVIRONMENT>                 // Possible value = TEST/PROD
 ) 
 
 ```
@@ -47,18 +52,18 @@ payu, err := payu.NewClient(
 
 Method |  Description
 ------------- | -------------
-[**GeneratePaymentForm**](docs/initiate.md)  | Genereate auto submit HTML form to intitiate transaction 
-[**VerifyPayment**](docs/verifyPayment.md) | Provides the details of a transaction  
-[**GetTransactionDetails**](docs/getTransactionDetails.md) | Provides the details of a transactions for a specfic timeperiod
-[**ValidateVPA**](docs/validateVPA.md) | Used to validate VPA of a user. 
-[**CancelRefundTransaction**](docs/cancelRefundTransaction.md) | Initiate refunds. 
-[**CheckActionStatus**](docs/checkActionStatus.md) | Check the status of a refund.  
-[**GetNetbankingStatus**](docs/getNetbankingStatus.md) | Check downtime status of PGs. 
-[**GetIssuingBankStatus**](docs/getIssuingBankStatus.md) | Check downtime through bin number. 
-[**CheckIsDomestic**](docs/checkIsDomestic.md) | Check the bin information
-[**CreateInvoice**](docs/createInvoice.md) |  Used to create email and SMS invoice ( Pay by link ).
-[**ExpireInvoice**](docs/expireInvoice.md) | Used to expire an existing invoice.
-[**EligibleBinsForEMI**](docs/eligibleBinsForEMI.md) |  Used for checking the card eligibilty for EMI through the bin number.
-[**GetEmiAmountAccordingToInterest**](docs/getEmiAmountAccordingToInterest.md) | Used to fetch interest accordign to Banks and tenure.
-[**GetSettlementDetails**](docs/getSettlementDetails.md) |  Used to fetch settlement details for a particular date.
-[**GetCheckoutDetails**](docs/getCheckoutDetails.md) |  Used to fetch payment options, offers, eligibility, recommendations, and downtime details.
+**GeneratePaymentForm**  | Genereate auto submit HTML form to intitiate transaction 
+**VerifyPayment** | Provides the details of a transaction  
+**GetTransactionDetails** | Provides the details of a transactions for a specfic timeperiod
+**ValidateVPA** | Used to validate VPA of a user. 
+**CancelRefundTransaction** | Initiate refunds. 
+**CheckActionStatus** | Check the status of a refund.  
+**GetNetbankingStatus** | Check downtime status of PGs. 
+**GetIssuingBankStatus** | Check downtime through bin number. 
+**CheckIsDomestic** | Check the bin information
+**CreateInvoice** |  Used to create email and SMS invoice ( Pay by link ).
+**ExpireInvoice** | Used to expire an existing invoice.
+**EligibleBinsForEMI** |  Used for checking the card eligibilty for EMI through the bin number.
+**GetEmiAmountAccordingToInterest** | Used to fetch interest accordign to Banks and tenure.
+**GetSettlementDetails** |  Used to fetch settlement details for a particular date.
+**GetCheckoutDetails** |  Used to fetch payment options, offers, eligibility, recommendations, and downtime details.

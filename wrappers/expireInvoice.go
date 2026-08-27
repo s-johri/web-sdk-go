@@ -6,8 +6,7 @@ import (
 	"net/url"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// ExpireInvoice expires an existing invoice through the expire_invoice command.
 func ExpireInvoice(creds utils.Creds, apiEndPoint string, var1 string) (map[string]interface{}, error) {
 	command := "expire_invoice"
 	// Create the payload

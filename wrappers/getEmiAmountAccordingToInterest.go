@@ -7,8 +7,7 @@ import (
 	"strconv"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// GetEmiAmountAccordingToInterest returns EMI interest by bank and tenure through the getEmiAmountAccordingToInterest command.
 func GetEmiAmountAccordingToInterest(creds utils.Creds, apiEndPoint string, amount float64) (map[string]interface{}, error) {
 	command := "getEmiAmountAccordingToInterest"
 	// Create the payload

@@ -1,8 +1,5 @@
 package utils
 
-import (
-)
-
 type Creds struct {
 	Key string
 	Salt string

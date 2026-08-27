@@ -7,8 +7,7 @@ import (
 	"strconv"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// GetIssuingBankStatus reports issuer downtime for a bin through the getIssuingBankStatus command.
 func GetIssuingBankStatus(creds utils.Creds, apiEndPoint string , bin int) (map[string]interface{}, error) {
 
 	command := "getIssuingBankStatus"

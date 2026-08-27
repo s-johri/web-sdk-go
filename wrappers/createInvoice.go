@@ -7,8 +7,7 @@ import (
 	"github.com/payu-india/web-sdk-go/utils"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// CreateInvoice creates an email or SMS invoice through the create_invoice command.
 func CreateInvoice(creds utils.Creds, apiEndPoint string, params map[string]interface{}) (map[string]interface{}, error) {
 	command := "create_invoice"
 	//Marshal map to jsons string

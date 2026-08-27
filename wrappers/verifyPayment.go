@@ -6,8 +6,7 @@ import (
 	"net/url"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// VerifyPayment returns the details of a transaction through the verify_payment command.
 func VerifyPayment(creds utils.Creds, apiEndPoint string, var1 string) (map[string]interface{}, error) {
 	command := "verify_payment"
 	// Create the payload

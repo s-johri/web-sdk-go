@@ -6,8 +6,7 @@ import (
 	"net/url"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// GetNetbankingStatus reports payment gateway downtime through the getNetbankingStatus command.
 func GetNetbankingStatus(creds utils.Creds, apiEndPoint string, var1 string) (map[string]interface{}, error) {
 	command := "getNetbankingStatus"
 	// Create the payload

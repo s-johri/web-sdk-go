@@ -6,8 +6,7 @@ import (
 	"net/url"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// CheckActionStatus reports the status of a refund through the check_action_status command.
 func CheckActionStatus(creds utils.Creds,apiEndPoint string, var1 string) (map[string]interface{}, error) {
 	command := "check_action_status"
 	// Create the payload

@@ -7,8 +7,7 @@ import (
 	"strconv"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// CancelRefundTransaction initiates a refund through the cancel_refund_transaction command.
 func CancelRefundTransaction(creds utils.Creds,apiEndPoint string, var1 string, var2 string, var3 float64) (map[string]interface{}, error) {
 	command := "cancel_refund_transaction"
 	// Create the payload

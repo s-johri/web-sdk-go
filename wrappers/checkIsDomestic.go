@@ -7,8 +7,7 @@ import (
 	"strconv"
 )
 
-// VerifyPayment is a wrapper for the verify_payment command
-// It takes in the credentials and the var1 value and returns the response as a dictionary
+// CheckIsDomestic reports card issuer information for a bin through the check_isDomestic command.
 func CheckIsDomestic(creds utils.Creds, apiEndPoint string, bin int) (map[string]interface{}, error) {
 	command := "check_isDomestic"
 	var1 := strconv.Itoa(bin)
