@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -146,4 +147,80 @@ func TestHashersTreatMissingFieldsAsEmpty(t *testing.T) {
 	if got != want {
 		t.Errorf("a missing email does not hash as an empty email:\n missing: %s\n empty:   %s", got, want)
 	}
+}
+
+func TestCheckReversehash(t *testing.T) {
+	const validHash = "ddcfea305f9cb630268c12af1dab392b539332631723d5b030cddd968c0785cebdc197d2b129433be107788e368bc70c6c2d5c216586e90c7d779c9f448fee26"
+
+	t.Run("accepts a matching hash", func(t *testing.T) {
+		params := baseParams()
+		params["status"] = "success"
+		params["hash"] = validHash
+		ok, err := CheckReversehash(testCreds(), params)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if !ok {
+			t.Error("a valid hash was rejected")
+		}
+	})
+
+	t.Run("accepts an uppercase hash", func(t *testing.T) {
+		params := baseParams()
+		params["status"] = "success"
+		params["hash"] = strings.ToUpper(validHash)
+		ok, err := CheckReversehash(testCreds(), params)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if !ok {
+			t.Error("an uppercase hash was rejected")
+		}
+	})
+
+	t.Run("rejects a wrong hash", func(t *testing.T) {
+		params := baseParams()
+		params["status"] = "success"
+		params["hash"] = strings.Repeat("a", 128)
+		ok, err := CheckReversehash(testCreds(), params)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if ok {
+			t.Error("a wrong hash was accepted")
+		}
+	})
+
+	t.Run("errors when the hash is absent", func(t *testing.T) {
+		params := baseParams()
+		params["status"] = "success"
+		ok, err := CheckReversehash(testCreds(), params)
+		if err == nil {
+			t.Error("expected an error when hash is absent")
+		}
+		if ok {
+			t.Error("must fail closed when hash is absent")
+		}
+	})
+
+	t.Run("errors when the hash is not a string", func(t *testing.T) {
+		params := baseParams()
+		params["status"] = "success"
+		params["hash"] = 12345
+		ok, err := CheckReversehash(testCreds(), params)
+		if err == nil {
+			t.Error("expected an error when hash is not a string")
+		}
+		if ok {
+			t.Error("must fail closed when hash is not a string")
+		}
+	})
+
+	t.Run("propagates a missing mandatory parameter", func(t *testing.T) {
+		params := baseParams()
+		params["hash"] = validHash
+		if _, err := CheckReversehash(testCreds(), params); err == nil {
+			t.Error("expected an error when status is missing")
+		}
+	})
 }

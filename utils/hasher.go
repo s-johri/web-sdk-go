@@ -2,8 +2,10 @@ package utils
 
 import (
 	"crypto/sha512"
+	"crypto/subtle"
 	"encoding/hex"
 	"fmt"
+	"strings"
 )
 
 func HashString(rawString string) string {
@@ -80,15 +82,25 @@ func ReverseHasher(credes Creds, params map[string]interface{}) (string, error) 
 	return HashString(hashString), nil
 }
 
+// CheckReversehash verifies the hash PayU returned with a payment response.
+//
+// The comparison is constant time, so a caller cannot learn the expected hash
+// byte by byte from response timing. It is also case insensitive, because the
+// hash is hex and different PayU surfaces differ in case.
 func CheckReversehash(credes Creds, params map[string]interface{}) (bool, error) {
-	hash, err := ReverseHasher(credes, params)
+	expected, err := ReverseHasher(credes, params)
 	if err != nil {
 		return false, err
 	}
-	if hash == params["hash"] {
-		return true, nil
+
+	received, ok := params["hash"].(string)
+	if !ok {
+		return false, fmt.Errorf("missing mandatory parameter %q", "hash")
 	}
-	return false, nil
+
+	expectedBytes := []byte(strings.ToLower(expected))
+	receivedBytes := []byte(strings.ToLower(received))
+	return subtle.ConstantTimeCompare(expectedBytes, receivedBytes) == 1, nil
 }
 
 func ApiHasher(cred Creds, params ApiStruct) string {
