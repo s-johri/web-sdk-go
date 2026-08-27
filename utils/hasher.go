@@ -12,51 +12,72 @@ func HashString(rawString string) string {
 	return hex.EncodeToString(sha.Sum(nil))
 }
 
+// PaymentHasher builds the SHA-512 request hash for a payment.
+//
+// Layout:
+//
+//	key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||salt
+//
+// When additionalCharges is present it is appended after the salt.
 func PaymentHasher(credes Creds, params map[string]interface{}) string {
 	var udfFields string
 	for i := 1; i <= 5; i++ {
-		if val, ok := params[fmt.Sprintf("udf%d", i)]; ok {
-			udfFields += fmt.Sprintf("%v|", val)
-		} else {
-			udfFields += "|"
-		}
+		udfFields += FormatValue(params[fmt.Sprintf("udf%d", i)]) + "|"
 	}
-	hashString := fmt.Sprintf("%v|%v|%v|%v|%v|%v|%v|||||%v", credes.Key, params["txnid"], params["amount"], params["productinfo"], params["firstname"], params["email"], udfFields, credes.Salt)
+
+	hashString := fmt.Sprintf("%s|%s|%s|%s|%s|%s|%s|||||%s",
+		credes.Key,
+		FormatValue(params["txnid"]),
+		FormatValue(params["amount"]),
+		FormatValue(params["productinfo"]),
+		FormatValue(params["firstname"]),
+		FormatValue(params["email"]),
+		udfFields,
+		credes.Salt,
+	)
 
 	if _, ok := params["additionalCharges"]; ok {
-		hashString += fmt.Sprintf("|%v", params["additionalCharges"])
+		hashString += "|" + FormatValue(params["additionalCharges"])
 	}
 	return HashString(hashString)
 }
 
-func ReverseHasher(credes Creds, params map[string]interface{}) (string,error) {
-	mandatoryParams := []string{"status","txnid", "amount", "productinfo", "firstname"}
+// ReverseHasher builds the SHA-512 response hash that PayU returns, so a
+// merchant can verify a webhook or a redirect.
+//
+// Layout:
+//
+//	salt|status||||||udf5|udf4|udf3|udf2|udf1|email|firstname|productinfo|amount|txnid|key
+//
+// When additionalCharges is present it is prepended before the salt.
+func ReverseHasher(credes Creds, params map[string]interface{}) (string, error) {
+	mandatoryParams := []string{"status", "txnid", "amount", "productinfo", "firstname"}
 	for _, paramName := range mandatoryParams {
-			if _, ok := params[paramName]; !ok {
-					return "", fmt.Errorf("missing mandatory parameter %q", paramName)
-			}
+		if _, ok := params[paramName]; !ok {
+			return "", fmt.Errorf("missing mandatory parameter %q", paramName)
+		}
 	}
-	udf1, udf2, udf3, udf4, udf5 := "", "", "", "", ""
-	if value, ok := params["udf1"].(string); ok {
-		udf1 = value
-	}
-	if value, ok := params["udf2"].(string); ok {
-		udf2 = value
-	}
-	if value, ok := params["udf3"].(string); ok {
-		udf3 = value
-	}
-	if value, ok := params["udf4"].(string); ok {
-		udf4 = value
-	}
-	if value, ok := params["udf5"].(string); ok {
-		udf5 = value
-	}
-	hashString := fmt.Sprintf("%v|%v||||||%v|%v|%v|%v|%v|%v|%v|%v|%v|%v|%v", credes.Salt, params["status"], udf5, udf4, udf3, udf2, udf1, params["email"], params["firstname"], params["productinfo"], params["amount"], params["txnid"], credes.Key)
+
+	hashString := fmt.Sprintf("%s|%s||||||%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
+		credes.Salt,
+		FormatValue(params["status"]),
+		FormatValue(params["udf5"]),
+		FormatValue(params["udf4"]),
+		FormatValue(params["udf3"]),
+		FormatValue(params["udf2"]),
+		FormatValue(params["udf1"]),
+		FormatValue(params["email"]),
+		FormatValue(params["firstname"]),
+		FormatValue(params["productinfo"]),
+		FormatValue(params["amount"]),
+		FormatValue(params["txnid"]),
+		credes.Key,
+	)
+
 	if _, ok := params["additionalCharges"]; ok {
-		hashString = fmt.Sprintf("%v|%v", params["additionalCharges"], hashString)
+		hashString = FormatValue(params["additionalCharges"]) + "|" + hashString
 	}
-	return HashString(hashString),nil
+	return HashString(hashString), nil
 }
 
 func CheckReversehash(credes Creds, params map[string]interface{}) (bool, error) {
